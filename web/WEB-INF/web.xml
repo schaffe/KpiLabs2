@@ -13,7 +13,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>AppServlet</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/app/</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CityServlet</servlet-name>
