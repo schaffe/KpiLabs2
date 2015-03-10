@@ -45,15 +45,27 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
         String cityName = request.getParameter("name");
         String populationStr = request.getParameter("population");
         Integer population = null;
-        if (cityName == null) {
+        if (cityName == null || cityName.trim().equals("")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         if (populationStr != null)
             population = Integer.parseInt(populationStr);
-        dao.create(new City(null, cityName, population));
+        City city = new City(null, cityName.trim(), population);
+        dao.create(city);
 
-        response.setStatus(HttpServletResponse.SC_CREATED);
+        if (city.getId() != null) {
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.setContentType("application/json");
+            PrintWriter out = response.getWriter();
+            out.print(gson.toJson(city));
+            out.flush();
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 
     protected void doGet(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {

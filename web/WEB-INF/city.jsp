@@ -12,25 +12,23 @@
 </head>
 <body>
 
-<div></div>
-
-<form action="${pageContext.request.contextPath}/city/" method="post">
-    <table>
-        <tr>
-            <td>Name</td>
-            <td><input type="text" name="name"></td>
-        </tr>
-        <tr>
-            <td><input type="submit" value="Add"></td>
-        </tr>
-    </table>
+<form action="${pageContext.request.contextPath}/city/" id="add_city_form">
+    <p><label for="add_city_form_name">
+        Name
+        <input type="text" name="name" id="add_city_form_name">
+    </label></p>
+    <p><label for="add_city_form_population">
+        Population
+        <input type="number" min="0" name="population" id="add_city_form_population">
+    </label></p>
+    <p><input type="submit" value="Add"></p>
 </form>
 
 <h3>Cities</h3>
 <table class="table" border="0" id="table">
     <tr>
-        <th onclick="sortField('name')">City</th>
-        <th onclick="sortField('population')">Population</th>
+        <th onclick="sortByColumn('name')">City</th>
+        <th onclick="sortByColumn('population')">Population</th>
         <th>&nbsp;</th>
         <th>&nbsp;</th>
     </tr>

@@ -1,13 +1,17 @@
 var citiesList;
+
 var sortParams = {
     column: null,
     desc: false,
-    nextOrder: function(column) {
+    nextOrder: function (column, keepOrder) {
         console.log(column);
         console.log(this.column);
         console.log(this.desc);
 
-        if(column != this.column) {
+        if (keepOrder) {
+
+        }
+        if (column != this.column) {
             this.column = column;
             return this.desc = false, this.desc;
         } else {
@@ -17,7 +21,17 @@ var sortParams = {
     }
 };
 
-var sortField = function (column) {
+var addCity = function () {
+    var $form = $('#add_city_form');
+    $.post($form.attr('action'), $form.serialize())
+        .done(function (city) {
+            resetForm($form);
+            citiesList.push(city);
+            sortByColumn(sortParams.column, true)
+        })
+};
+
+var sortByColumn = function (column) {
     switch (column) {
         case 'name' :
             citiesList.sort(sortBy(column, sortParams.nextOrder(column), function (a) {
@@ -50,7 +64,7 @@ var sortBy = function (field, reverse, primer) {
     }
 };
 
-var showAll = function (sort) {
+var showAll = function () {
     $.get("/city").done(function (cities) {
         citiesList = cities;
         //if(sort) {
@@ -60,14 +74,18 @@ var showAll = function (sort) {
     });
 };
 
+function appendCity(city) {
+    var row = jQuery("<tr>" +
+    "<td>" + city.name + "</td>" +
+    "<td>" + city.population + "</td>" +
+    "<td>Edit</td>" +
+    "<td>" + "<a href=\"#\" id=\"" + city.id + "\" class=\"del\">Delete</a></td></tr>");
+    $("#table_body").append(row);
+}
 var populateTable = function (cities) {
     for (var i = 0; i < cities.length; i++) {
         var city = cities[i];
-        $("#table_body").append("<tr>" +
-        "<td>" + city.name + "</td>" +
-        "<td>" + city.population + "</td>" +
-        "<td>Edit</td>" +
-        "<td>" + "<a href=\"#\" id=\"" + city.id + "\" class=\"del\">Delete</a></td></tr>");
+        appendCity(city);
     }
 };
 
@@ -75,8 +93,20 @@ function clearTable() {
     $('#table_body').text("");
 }
 
+function resetForm($form) {
+    $form.find('input:text, input:password, input:file, select, textarea').val('');
+    $form.find('input:radio, input:checkbox')
+        .removeAttr('checked').removeAttr('selected');
+    $('#add_city_form_population').val('');
+}
+
 $(document).ready(function () {
     showAll();
+
+    $('#add_city_form').submit(function(event){
+        event.preventDefault();
+        addCity();
+    });
 });
 
 
