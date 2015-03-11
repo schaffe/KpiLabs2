@@ -2,21 +2,16 @@ package ua.kpi.dzidzoiev.booking.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import ua.kpi.dzidzoiev.booking.controller.dao.CityDao;
 import ua.kpi.dzidzoiev.booking.controller.dao.MySqlCityDaoImpl;
 import ua.kpi.dzidzoiev.booking.controller.db.MySqlConnectionPool;
 import ua.kpi.dzidzoiev.booking.model.City;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by dzidzoiev on 2/27/15.
@@ -32,15 +27,15 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String idParam = request.getParameter("id");
-        if (idParam != null) {
-            Integer id = Integer.parseInt(idParam);
+        System.out.println("CityServlet - get");
+        PathVariables var = PathVariables.getInstance(request.getRequestURI());
+        if (var.hasItem()) {
+            Integer id = Integer.parseInt(var.getItem());
             City c = new City(id);
             dao.delete(c);
             if (c.getId() == null) {
                 response.setStatus(HttpServletResponse.SC_OK);
                 return;
-
             }
         }
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -81,12 +76,12 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
 
     protected void doGet(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         System.out.println("CityServlet - get");
-        PathParameters parameters = PathParameters.getInstance(request.getRequestURI());
+        PathVariables parameters = PathVariables.getInstance(request.getRequestURI());
         String jsonObject;
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        if (parameters.hasParameters()) {
-            int cityId = Integer.valueOf(parameters.getParameter());
+        if (parameters.hasItem()) {
+            int cityId = Integer.valueOf(parameters.getItem());
             jsonObject = gson.toJson(dao.get(cityId));
         } else {
             jsonObject = gson.toJson(dao.getAll());

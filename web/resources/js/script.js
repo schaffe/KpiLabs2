@@ -32,23 +32,7 @@ var addCity = function () {
         })
 };
 
-var deleteCity = function (id) {
-    $.ajax({
-        url: '/city/',
-        type: 'DELETE',
-        data: {id : id},
-        dataType: 'json',
-        success: function(result) {
-            for (var i = 0; i < citiesList.length; i++) {
-                if (citiesList[i].id == id) {
-                    citiesList.splice(i, 1);
-                }
-            }
-            return true;
-        }
-    });
 
-};
 
 var sortByColumn = function (column) {
     switch (column) {
@@ -133,9 +117,21 @@ $(document).on('click', '.del', function () {
     var id = $elem.attr('id');
     var r = confirm("Are you sure want to delete " + id);
     if (r == true) {
-        if (deleteCity(id) == true) {
-            $elem.parent().parent().remove();
+        function del (id) {
+            $.ajax({
+                url: '/city/' + id,
+                type: 'DELETE',
+                success: function(result) {
+                    for (var i = 0; i < citiesList.length; i++) {
+                        if (citiesList[i].id == id) {
+                            citiesList.splice(i, 1);
+                            $elem.parent().parent().remove();
+                        }
+                    }
+                }
+            });
         }
+        del(id);
     }
 });
 
