@@ -31,8 +31,19 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String idParam = request.getParameter("id");
+        if (idParam != null) {
+            Integer id = Integer.parseInt(idParam);
+            City c = new City(id);
+            dao.delete(c);
+            if (c.getId() == null) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
+
+            }
+        }
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
@@ -64,25 +75,21 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
             out.print(gson.toJson(city));
             out.flush();
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
     protected void doGet(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         System.out.println("CityServlet - get");
-        String pathInfo = request.getRequestURI();
-        System.out.println("path: " + pathInfo);
-        String[] pathParts = pathInfo.split("/");
+        PathParameters parameters = PathParameters.getInstance(request.getRequestURI());
         String jsonObject;
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        if (pathParts.length <= 2) {
-            //display all
-            jsonObject = gson.toJson(dao.getAll());
-        } else {
-            //display one
-            int cityId = Integer.valueOf(pathParts[2]);
+        if (parameters.hasParameters()) {
+            int cityId = Integer.valueOf(parameters.getParameter());
             jsonObject = gson.toJson(dao.get(cityId));
+        } else {
+            jsonObject = gson.toJson(dao.getAll());
         }
 
         response.setContentType("application/json");

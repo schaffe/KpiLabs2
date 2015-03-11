@@ -16,7 +16,7 @@ var sortParams = {
             return this.desc = !this.desc, this.desc;
         }
     },
-    keepOrder: function() {
+    keepOrder: function () {
         this.desc = !this.desc;
     }
 };
@@ -30,6 +30,24 @@ var addCity = function () {
             sortParams.keepOrder();
             sortByColumn(sortParams.column, true)
         })
+};
+
+var deleteCity = function (id) {
+    $.ajax({
+        url: '/city/',
+        type: 'DELETE',
+        data: {id : id},
+        dataType: 'json',
+        success: function(result) {
+            for (var i = 0; i < citiesList.length; i++) {
+                if (citiesList[i].id == id) {
+                    citiesList.splice(i, 1);
+                }
+            }
+            return true;
+        }
+    });
+
 };
 
 var sortByColumn = function (column) {
@@ -104,13 +122,22 @@ function resetForm($form) {
 $(document).ready(function () {
     showAll();
 
-    $('#add_city_form').submit(function(event){
+    $('#add_city_form').submit(function (event) {
         event.preventDefault();
         addCity();
     });
 });
 
-
+$(document).on('click', '.del', function () {
+    var $elem = $(this);
+    var id = $elem.attr('id');
+    var r = confirm("Are you sure want to delete " + id);
+    if (r == true) {
+        if (deleteCity(id) == true) {
+            $elem.parent().parent().remove();
+        }
+    }
+});
 
 
 

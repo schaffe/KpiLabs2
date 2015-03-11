@@ -15,7 +15,7 @@
 <form action="${pageContext.request.contextPath}/city/" id="add_city_form">
     <p><label for="add_city_form_name">
         Name
-        <input type="text" name="name" id="add_city_form_name">
+        <input type="text" name="name" id="add_city_form_name" required>
     </label></p>
     <p><label for="add_city_form_population">
         Population
