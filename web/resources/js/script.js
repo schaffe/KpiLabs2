@@ -3,14 +3,11 @@ var citiesList;
 var sortParams = {
     column: null,
     desc: false,
-    nextOrder: function (column, keepOrder) {
+    nextOrder: function (column) {
         console.log(column);
         console.log(this.column);
         console.log(this.desc);
 
-        if (keepOrder) {
-
-        }
         if (column != this.column) {
             this.column = column;
             return this.desc = false, this.desc;
@@ -18,6 +15,9 @@ var sortParams = {
             this.column = column;
             return this.desc = !this.desc, this.desc;
         }
+    },
+    keepOrder: function() {
+        this.desc = !this.desc;
     }
 };
 
@@ -27,6 +27,7 @@ var addCity = function () {
         .done(function (city) {
             resetForm($form);
             citiesList.push(city);
+            sortParams.keepOrder();
             sortByColumn(sortParams.column, true)
         })
 };
