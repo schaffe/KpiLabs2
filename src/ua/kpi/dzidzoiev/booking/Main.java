@@ -27,7 +27,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Image image = null;
        // System.setProperty("jsse.enableSNIExtension", "false");
-
+// http://stackoverflow.com/questions/7615645/ssl-handshake-alert-unrecognized-name-error-since-upgrade-to-java-1-7-0
         String urlString = (args.length == 1) ?
                 args[0] : "https://sa-1236541526.ipaas.ipanematech.com/images/logo-1236541526.png";
         URL url = new URL(urlString);
@@ -46,16 +46,14 @@ public class Main {
 
         SSLSocket sslsocket = (SSLSocket) factory.createSocket(_socket, "", _port, true);
         sslsocket.setUseClientMode(true);
-        _socket = sslsocket;
-        _socket.setSoTimeout(_timeout);
-        ((SSLSocket) _socket).startHandshake();
+        sslsocket.setSoTimeout(_timeout);
+        sslsocket.startHandshake();
 
-//
-//        SSLSocket socket =
-//                (SSLSocket)factory.createSocket(url.getHost(), 443);
+        InputStream is = sslsocket.getInputStream();
 
 
-        byte[] bytes = getBytes(sslsocket.getInputStream());
+        byte[] bytes = getBytes(is);
+        System.out.println(Arrays.toString(bytes));
         image = ImageIO.read(sslsocket.getInputStream());
 
 
