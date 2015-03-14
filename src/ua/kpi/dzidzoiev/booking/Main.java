@@ -41,6 +41,7 @@ public class Main {
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         InputStream is = connection.getInputStream();
         Image image = ImageIO.read(is);
+        connection.disconnect();
 
 
         JFrame frame = new JFrame();

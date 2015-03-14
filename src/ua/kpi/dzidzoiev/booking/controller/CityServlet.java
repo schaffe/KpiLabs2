@@ -22,7 +22,7 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        dao = new MySqlCityDaoImpl(new MySqlConnectionPool().init("connection.properties"));
+        dao = new MySqlCityDaoImpl(null);
     }
 
     @Override

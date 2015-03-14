@@ -93,7 +93,7 @@ var populateTable = function (cities) {
 };
 
 function clearTable() {
-    $('#table_body').text("");
+    $('#table_body').empty();
 }
 
 function resetForm($form) {
@@ -121,7 +121,7 @@ $(document).on('click', '.del', function () {
             $.ajax({
                 url: '/city/' + id,
                 type: 'DELETE',
-                success: function(result) {
+                success: function() {
                     for (var i = 0; i < citiesList.length; i++) {
                         if (citiesList[i].id == id) {
                             citiesList.splice(i, 1);

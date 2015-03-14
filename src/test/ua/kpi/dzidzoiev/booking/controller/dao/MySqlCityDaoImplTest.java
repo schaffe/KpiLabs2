@@ -6,6 +6,7 @@ import org.junit.Test;
 import ua.kpi.dzidzoiev.booking.controller.dao.Dao;
 import ua.kpi.dzidzoiev.booking.controller.dao.MySqlCityDaoImpl;
 import ua.kpi.dzidzoiev.booking.controller.db.ConnectionPool;
+import ua.kpi.dzidzoiev.booking.controller.db.ConnectionProperties;
 import ua.kpi.dzidzoiev.booking.controller.db.MySqlConnectionPool;
 import ua.kpi.dzidzoiev.booking.model.City;
 
@@ -18,7 +19,8 @@ public class MySqlCityDaoImplTest {
     @Before
     public void setUp() throws Exception {
         pool = new MySqlConnectionPool();
-        pool.init("properties/connection.properties");
+        pool.init(new ConnectionProperties("localhost", 3306, "booking_service",
+                "booking_user", "password"));
         dao = new MySqlCityDaoImpl(pool);
     }
 
