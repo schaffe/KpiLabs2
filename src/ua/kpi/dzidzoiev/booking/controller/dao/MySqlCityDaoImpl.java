@@ -39,8 +39,9 @@ public class MySqlCityDaoImpl implements CityDao {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IllegalStateException(e);
+        } finally {
+            pool.releaseConnection(conn);
         }
-        pool.releaseConnection(conn);
         return null;
     }
 
@@ -64,8 +65,9 @@ public class MySqlCityDaoImpl implements CityDao {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IllegalStateException(e);
+        } finally {
+            pool.releaseConnection(conn);
         }
-        pool.releaseConnection(conn);
         return cities;
     }
 
@@ -96,8 +98,9 @@ public class MySqlCityDaoImpl implements CityDao {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IllegalStateException(e);
+        } finally {
+            pool.releaseConnection(conn);
         }
-        pool.releaseConnection(conn);
     }
 
     @Override
@@ -116,8 +119,9 @@ public class MySqlCityDaoImpl implements CityDao {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IllegalStateException(e);
+        } finally {
+            pool.releaseConnection(conn);
         }
-        pool.releaseConnection(conn);
     }
 
     @Override
@@ -131,7 +135,8 @@ public class MySqlCityDaoImpl implements CityDao {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IllegalStateException(e);
+        } finally {
+            pool.releaseConnection(conn);
         }
-        pool.releaseConnection(conn);
     }
 }
