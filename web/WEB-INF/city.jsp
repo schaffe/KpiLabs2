@@ -12,6 +12,7 @@
 </head>
 <body>
 
+<div class="bg"></div>
 <form action="${pageContext.request.contextPath}/city/" id="add_city_form">
     <p><label for="add_city_form_name">
         Name
@@ -23,7 +24,6 @@
     </label></p>
     <p><input type="submit" value="Add"></p>
 </form>
-
 <h3>Cities</h3>
 <table class="table" border="0" id="table">
     <tr>

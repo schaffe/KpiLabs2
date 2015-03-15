@@ -1,5 +1,7 @@
 package ua.kpi.dzidzoiev.booking.controller.db;
 
+import java.util.Properties;
+
 /**
  * Created by dzidzoiev on 3/14/15.
  */
@@ -16,6 +18,14 @@ public class ConnectionProperties {
         this.setDbName(dbName);
         this.setUser(user);
         this.setPassword(password);
+    }
+
+    public ConnectionProperties(Properties properties) {
+        this.setHost(properties.getProperty("host","localhost"));
+        this.setPort(Integer.parseInt(properties.getProperty("port","3306")));
+        this.setDbName(properties.getProperty("dbname"));
+        this.setUser(properties.getProperty("user"));
+        this.setPassword(properties.getProperty("password"));
     }
 
     public String getHost() {

@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ua.kpi.dzidzoiev.booking.controller.dao.CityDao;
 import ua.kpi.dzidzoiev.booking.controller.dao.MySqlCityDaoImpl;
+import ua.kpi.dzidzoiev.booking.controller.db.ConnectionPool;
+import ua.kpi.dzidzoiev.booking.controller.db.ConnectionPoolFactory;
+import ua.kpi.dzidzoiev.booking.controller.db.ConnectionProperties;
 import ua.kpi.dzidzoiev.booking.controller.db.MySqlConnectionPool;
 import ua.kpi.dzidzoiev.booking.model.City;
 
@@ -12,17 +15,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Properties;
 
 /**
  * Created by dzidzoiev on 2/27/15.
  */
 public class CityServlet extends javax.servlet.http.HttpServlet {
     CityDao dao;
+    ConnectionPool pool;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        dao = new MySqlCityDaoImpl(null);
+        Properties properties = new Properties();
+        try {
+            properties.load(getServletContext().getResourceAsStream("/WEB-INF/connection.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        pool = ConnectionPoolFactory
+                .getInstnce()
+                .getConnectionPool(ConnectionPoolFactory.MY_SQL)
+                .init(new ConnectionProperties(properties), 1);
+        dao = new MySqlCityDaoImpl(pool);
+    }
+
+    @Override
+    public void destroy() {
+        pool.closeConnections();
+        super.destroy();
     }
 
     @Override

@@ -20,7 +20,7 @@ public class MySqlCityDaoImplTest {
     public void setUp() throws Exception {
         pool = new MySqlConnectionPool();
         pool.init(new ConnectionProperties("localhost", 3306, "booking_service",
-                "booking_user", "password"), 3);
+                "booking_user", "password"), 1);
         dao = new MySqlCityDaoImpl(pool);
     }
 
