@@ -11,8 +11,21 @@
     <title>Cities</title>
 </head>
 <body>
-
-<div class="bg"></div>
+<div id="popupcontent">
+    <form action="${pageContext.request.contextPath}/city/" id="edit_city_form">
+        <p><label for="edit_city_form_name">
+            Name
+            <input type="text" name="name" id="edit_city_form_name" required>
+        </label></p>
+        <p><label for="edit_city_form_population">
+            Population
+            <input type="number" min="0" name="population" id="edit_city_form_population">
+        </label></p>
+        <p><input type="button" onclick="hidePopup()" value="Cancel"><input type="submit" value="Save"></p>
+    </form>
+    <%--<div id="statusbar"><button onclick="hidePopup();">Close window</button></div>--%>
+</div>
+<div class="main_content">
 <form action="${pageContext.request.contextPath}/city/" id="add_city_form">
     <p><label for="add_city_form_name">
         Name
@@ -35,5 +48,7 @@
     <tbody id="table_body">
     </tbody>
 </table>
+</div>
+<div class="bg"></div>
 </body>
 </html>

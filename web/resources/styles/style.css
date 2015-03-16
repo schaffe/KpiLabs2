@@ -6,24 +6,69 @@
 
 .bg {
     width: 100%;
-    height: 200px;
+    height: 100%;
     display: block;
-    position: relative;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: url(http://b.3cdn.net/rockefeller/916769b8a8398faf86_1um6bqalf.jpg);
+    background-size: cover;
+    opacity: 0.7;
+    z-index: -3;
 }
 
-.bg::after {
-    width: 100%;
-    content: "";
-    background: url(http://b.3cdn.net/rockefeller/916769b8a8398faf86_1um6bqalf.jpg);
-    opacity: 0.5;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+/*.bg::after {*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*background: black;*/
+    /*opacity: 0.6;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*bottom: 0;*/
+    /*right: 0;*/
+    /*position: fixed;*/
+    /*z-index: -2;*/
+/*}*/
+
+#popupcontent{
     position: absolute;
-    z-index: -1;
+    top: 200px;
+    left: 200px;
+    width: 300px;
+    height: 150px;
+    visibility: hidden;
+    overflow: hidden;
+    border:1px solid #CCC;
+    background-color:#F9F9F9;
+    border:1px solid #333;
+    padding:15px;
+    z-index: 30;
 }
+
+.main_content {
+    position:absolute;
+    /*top: 20%;*/
+    left: 40%;
+    padding: 10px;
+    background: #EDF2F6;
+    border-radius: 10px;
+    overflow: visible;
+    margin-top: 5%;
+}
+
 input[type='button']{
+    background: #5B8EEE;
+    width: 90px;
+    height: 30px;
+    border: 1px solid #CBDBFA;
+    color: white;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+input[type='submit']{
     background: #5B8EEE;
     width: 90px;
     height: 30px;

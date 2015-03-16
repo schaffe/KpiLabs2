@@ -13,6 +13,7 @@ import ua.kpi.dzidzoiev.booking.model.City;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
@@ -48,7 +49,7 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("CityServlet - get");
+        System.out.println("CityServlet - delete");
         PathVariables var = PathVariables.getInstance(request.getRequestURI());
         if (var.hasItem()) {
             Integer id = Integer.parseInt(var.getItem());
@@ -63,8 +64,23 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        BufferedReader reader = request.getReader();
+
+        String s = reader.readLine();
+        String[] elem = s.split("&");
+        String name = elem[0].split("=")[1];
+        Integer pop = Integer.parseInt(elem[1].split("=")[1]);
+        Integer id = null;
+        PathVariables var = PathVariables.getInstance(request.getRequestURI());
+        if (var.hasItem()) {
+            id = Integer.parseInt(var.getItem());
+        }
+
+        City c = new City(id, name, pop);
+        dao.update(c);
+        response.setStatus(HttpServletResponse.SC_OK);
+//        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
