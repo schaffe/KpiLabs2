@@ -16,7 +16,13 @@ public class MySqlCityDaoImpl implements CityDao {
 
     ConnectionPool pool;
 
+    public MySqlCityDaoImpl() {}
+
     public MySqlCityDaoImpl(ConnectionPool pool) {
+        this.pool = pool;
+    }
+
+    public void init(ConnectionPool pool) {
         this.pool = pool;
     }
 
