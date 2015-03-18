@@ -12,6 +12,9 @@ public class CityPhoto {
     @Column
     private String url;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private City city;
+
     public CityPhoto() {
     }
 
@@ -29,5 +32,13 @@ public class CityPhoto {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 }

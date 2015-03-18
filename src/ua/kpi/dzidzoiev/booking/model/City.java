@@ -16,7 +16,7 @@ public class City {
     @Column
     private Integer population;
 
-    @OneToOne(fetch=FetchType.LAZY, mappedBy="url")
+    @OneToOne(fetch=FetchType.LAZY, mappedBy="city")
     private CityPhoto photo;
 
     public City() {
