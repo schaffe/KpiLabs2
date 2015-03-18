@@ -27,10 +27,13 @@ public class JpaCityDaoImplTest {
         em = emf.createEntityManager();
         dao = (CityDao) DaoFactory.getInstance().getDao(DaoFactory.PROVIDER_JPA, DaoFactory.ENTITIY_CITY);
         ((JpaCityDaoImpl)dao).init(em);
+        em.getTransaction().begin();
     }
 
     @After
     public void tearDown() throws Exception {
+        em.getTransaction().commit();
+        em.close();
         emf.close();
     }
 

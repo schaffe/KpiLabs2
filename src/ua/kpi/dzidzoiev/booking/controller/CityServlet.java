@@ -3,6 +3,8 @@ package ua.kpi.dzidzoiev.booking.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ua.kpi.dzidzoiev.booking.controller.dao.CityDao;
+import ua.kpi.dzidzoiev.booking.controller.dao.DaoFactory;
+import ua.kpi.dzidzoiev.booking.controller.dao.JpaCityDaoImpl;
 import ua.kpi.dzidzoiev.booking.controller.dao.MySqlCityDaoImpl;
 import ua.kpi.dzidzoiev.booking.controller.db.ConnectionPool;
 import ua.kpi.dzidzoiev.booking.controller.db.ConnectionPoolFactory;
@@ -10,6 +12,7 @@ import ua.kpi.dzidzoiev.booking.controller.db.ConnectionProperties;
 import ua.kpi.dzidzoiev.booking.controller.db.MySqlConnectionPool;
 import ua.kpi.dzidzoiev.booking.model.City;
 
+import javax.persistence.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,27 +26,21 @@ import java.util.Properties;
  */
 public class CityServlet extends javax.servlet.http.HttpServlet {
     CityDao dao;
-    ConnectionPool pool;
+    EntityManagerFactory emf;
+    EntityManager em;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        Properties properties = new Properties();
-        try {
-            properties.load(getServletContext().getResourceAsStream("/WEB-INF/connection.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        pool = ConnectionPoolFactory
-                .getInstnce()
-                .getConnectionPool(ConnectionPoolFactory.MY_SQL)
-                .init(new ConnectionProperties(properties), 1);
-        dao = new MySqlCityDaoImpl(pool);
+        emf = Persistence.createEntityManagerFactory("Booking");
+        em = emf.createEntityManager();
+        dao = (CityDao) DaoFactory.getInstance().getDao(DaoFactory.PROVIDER_JPA, DaoFactory.ENTITIY_CITY);
+        ((JpaCityDaoImpl) dao).init(em);
     }
 
     @Override
     public void destroy() {
-        pool.closeConnections();
+        em.close();
         super.destroy();
     }
 
@@ -53,14 +50,22 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
         PathVariables var = PathVariables.getInstance(request.getRequestURI());
         if (var.hasItem()) {
             Integer id = Integer.parseInt(var.getItem());
-            City c = new City(id);
-            dao.delete(c);
-            if (c.getId() == null) {
+            try {
+                EntityTransaction tx = em.getTransaction();
+                if (!tx.isActive()) {
+                    tx.begin();
+                }
+                City c = dao.get(id);
+                dao.delete(c);
+
+                tx.commit();
                 response.setStatus(HttpServletResponse.SC_OK);
-                return;
+            } catch (PersistenceException | IllegalStateException e) {
+                e.printStackTrace();
+                em.getTransaction().rollback();
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
         }
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
@@ -78,9 +83,18 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
         }
 
         City c = new City(id, name, pop);
-        dao.update(c);
-        response.setStatus(HttpServletResponse.SC_OK);
-//        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        try {
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
+            dao.update(c);
+            em.getTransaction().commit();
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (PersistenceException | IllegalStateException e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 
     protected void doPost(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
@@ -95,18 +109,28 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
         if (populationStr != null)
             population = Integer.parseInt(populationStr);
         City city = new City(null, cityName.trim(), population);
-        dao.create(city);
+        try {
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
+            dao.create(city);
+            em.getTransaction().commit();
 
-        if (city.getId() != null) {
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
+            if (city.getId() != null) {
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.create();
 
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            response.setContentType("application/json");
-            PrintWriter out = response.getWriter();
-            out.print(gson.toJson(city));
-            out.flush();
-        } else {
+                response.setStatus(HttpServletResponse.SC_CREATED);
+                response.setContentType("application/json");
+                PrintWriter out = response.getWriter();
+                out.print(gson.toJson(city));
+                out.flush();
+            } else {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } catch (PersistenceException | IllegalStateException e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
@@ -114,15 +138,26 @@ public class CityServlet extends javax.servlet.http.HttpServlet {
     protected void doGet(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         System.out.println("CityServlet - get");
         PathVariables parameters = PathVariables.getInstance(request.getRequestURI());
-        String jsonObject;
+        String jsonObject = null;
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        if (parameters.hasItem()) {
-            int cityId = Integer.valueOf(parameters.getItem());
-            jsonObject = gson.toJson(dao.get(cityId));
-        } else {
-            jsonObject = gson.toJson(dao.getAll());
+        try {
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
+            if (parameters.hasItem()) {
+                int cityId = Integer.valueOf(parameters.getItem());
+                jsonObject = gson.toJson(dao.get(cityId));
+            } else {
+                jsonObject = gson.toJson(dao.getAll());
+            }
+        } catch (PersistenceException | IllegalStateException e) {
+            e.printStackTrace();
+            em.getTransaction().rollback();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
+        em.getTransaction().commit();
 
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
