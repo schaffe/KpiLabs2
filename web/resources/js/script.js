@@ -140,9 +140,10 @@ function getCityFromList(id) {
 }
 
 var selectedId;
-function showPopupCity(id){
+function showPopupCity(id) {
     var popUp = document.getElementById("popupcontent");
-    popUp.style.visibility = "visible";;
+    popUp.style.visibility = "visible";
+    ;
     selectedId = id;
     var $name = $("#edit_city_form_name");
     var $population = $("#edit_city_form_population");
@@ -171,11 +172,14 @@ function editCity() {
             hidePopup();
             clearTable();
             showAll();
+        },
+        error: function () {
+            alert("error");
         }
     });
 }
 
-function hidePopup(){
+function hidePopup() {
     var popUp = document.getElementById("popupcontent");
     popUp.style.visibility = "hidden";
 }
@@ -197,7 +201,7 @@ $(document).ready(function () {
 $(document).on('click', '.del', function () {
     var $elem = $(this);
     var id = $elem.parent().parent().attr('id');
-    var r = confirm("Are you sure want to delete " + id);
+    var r = confirm("Are you sure want to delete " + getCityFromList(id).name + "?");
     if (r == true) {
         function del(id) {
             $.ajax({
@@ -210,6 +214,9 @@ $(document).on('click', '.del', function () {
                             $elem.parent().parent().remove();
                         }
                     }
+                },
+                error: function () {
+                    alert("error");
                 }
             });
         }
@@ -229,7 +236,7 @@ $(document).on('click', 'tr', function () {
     var id = $elem.attr('id');
     var cityName = getCityFromList(id).name;
     console.log(id + " " + cityName)
-    changeBg(cityName);
+    //changeBg(cityName);
 });
 
 

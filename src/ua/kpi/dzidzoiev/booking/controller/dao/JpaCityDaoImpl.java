@@ -30,22 +30,17 @@ public class JpaCityDaoImpl implements CityDao {
 
     @Override
     public void create(City city) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(city );
-        entityManager.getTransaction().commit();
+        entityManager.persist(city);
     }
 
     @Override
     public void update(City city) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(city);
-        entityManager.getTransaction().commit();
+        entityManager.merge(city);
     }
 
     @Override
     public void delete(City city) {
-        entityManager.getTransaction().begin();
+        entityManager.merge(city);
         entityManager.remove(city);
-        entityManager.getTransaction().commit();
     }
 }
