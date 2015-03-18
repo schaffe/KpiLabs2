@@ -80,8 +80,8 @@ function appendCity(city) {
     var row = jQuery("<tr id=\"" + city.id + "\" >" +
     "<td>" + city.name + "</td>" +
     "<td>" + city.population + "</td>" +
-    "<td>" + "<a href=\"#\" class=\"edit\">Edit</a></td>" +
-    "<td>" + "<a href=\"#\" class=\"del\">Delete</a></td></tr>");
+    "<td>" + "<a href=\"#\" class=\"edit\"><img src=\"/resources/img/edit_32.png\" width='16px'/></a></td>" +
+    "<td>" + "<a href=\"#\" class=\"del\"><img src=\"/resources/img/delete.png\" width = '16px'></a></td></tr>");
     $("#table_body").append(row);
 }
 var populateTable = function (cities) {

@@ -13,41 +13,37 @@
 <body>
 <div id="popupcontent">
     <form action="${pageContext.request.contextPath}/city/" id="edit_city_form">
-        <p><label for="edit_city_form_name">
-            Name
+        <p>
             <input type="text" name="name" id="edit_city_form_name" required>
-        </label></p>
-        <p><label for="edit_city_form_population">
-            Population
-            <input type="number" min="0" name="population" id="edit_city_form_population">
-        </label></p>
+        </p>
+        <p><input type="number" min="0" name="population" id="edit_city_form_population">
+        </p>
         <p><input type="button" onclick="hidePopup()" value="Cancel"><input type="submit" value="Save"></p>
     </form>
     <%--<div id="statusbar"><button onclick="hidePopup();">Close window</button></div>--%>
 </div>
 <div class="main_content">
 <form action="${pageContext.request.contextPath}/city/" id="add_city_form">
-    <p><label for="add_city_form_name">
-        Name
-        <input type="text" name="name" id="add_city_form_name" required>
-    </label></p>
-    <p><label for="add_city_form_population">
-        Population
-        <input type="number" min="0" name="population" id="add_city_form_population">
-    </label></p>
+    <p>
+        <input type="text" name="name" id="add_city_form_name" placeholder = "City" required></p>
+    <p>
+        <input type="number" min="0" name="population" id="add_city_form_population" placeholder = "Population">
+    </p>
     <p><input type="submit" value="Add"></p>
 </form>
-<h3>Cities</h3>
-<table class="table" border="0" id="table">
-    <tr>
-        <th onclick="sortByColumn('name')">City</th>
-        <th onclick="sortByColumn('population')">Population</th>
-        <th>&nbsp;</th>
-        <th>&nbsp;</th>
-    </tr>
-    <tbody id="table_body">
-    </tbody>
-</table>
+    </div>
+<div class = "main_content">
+    <h3>Cities</h3>
+    <table class="table" border="0" id="table">
+        <tr>
+            <th onclick="sortByColumn('name')">City</th>
+            <th onclick="sortByColumn('population')">Population</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        </tr>
+        <tbody id="table_body">
+        </tbody>
+    </table>
 </div>
 <div class="bg"></div>
 </body>
